@@ -1,0 +1,73 @@
+hash: 217dd3c0316a1f5882f46253e47cfd8b7d76d7ee1218f25a83801959d512d312
+updated: 2019-05-31T11:36:57.243123767+02:00
+imports:
+- name: github.com/fatih/structs
+  version: a720dfa8df582c51dee1b36feabb906bde1588bd
+- name: github.com/go-openapi/analysis
+  version: 7222828b8ce19afee3c595aef6643b9e42150120
+- name: github.com/go-openapi/errors
+  version: 49fe8b3a0e0d32a617d8d50c67f856ad6e45b28b
+- name: github.com/go-openapi/loads
+  version: 315567415dfd74b651f7a62cabfc82a57ed7b9ad
+- name: github.com/go-openapi/spec
+  version: d8000b5bfbd1147255710505a27c735b6b2ae2ac
+- name: github.com/go-openapi/swag
+  version: 3b6d86cd965820f968760d5d419cb4add096bdd7
+- name: github.com/go-openapi/validate
+  version: 2c997e169d705fe1e4235c9c1d62a7e704a84290
+- name: github.com/golang/protobuf
+  version: b5d812f8a3706043e23a9cd5babf2e5423744d30
+- name: github.com/gorilla/handlers
+  version: 90663712d74cb411cbef281bc1e08c19d1a76145
+- name: github.com/gorilla/mux
+  version: e3702bed27f0d39777b0b37b664b6280e8ef8fbf
+- name: github.com/hashicorp/golang-lru
+  version: 20f1fb78b0740ba8c3cb143a61e86ba5c8669768
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: f55edac94c9bbba5d6182a4be46d86a2c9b5b50e
+- name: github.com/nats-io/go-nats
+  version: d66cb54e6b7bdd93f0b28afc8450d84c780dfb68
+- name: github.com/nats-io/go-nats-streaming
+  version: 6e620057a207bd61e992c1c5b6a2de7b6a4cb010
+- name: github.com/nats-io/nuid
+  version: 4b96681fa6d28dd0ab5fe79bac63b3a493d9ee94
+- name: github.com/pkg/errors
+  version: ba968bfe8b2f7e042a574c888954fccecfa385b4
+- name: github.com/robertkrimen/otto
+  version: 15f95af6e78dcd2030d8195a138bd88d4f403546
+- name: github.com/satori/go.uuid
+  version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
+- name: github.com/sirupsen/logrus
+  version: a67f783a3814b8729bd2dac5780b5f78f8dbd64d
+- name: github.com/urfave/cli
+  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
+- name: golang.org/x/crypto
+  version: 20be4c3c3ed52bfccdb2d59a412ee1a936d175a7
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/net
+  version: f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f
+- name: golang.org/x/sync
+  version: 112230192c580c3556b8cee6403af37a4fc5f28c
+  subpackages:
+  - semaphore
+  - syncmap
+- name: golang.org/x/sys
+  version: c488ab1dd8481ef762f96a79a9577c27825be697
+  subpackages:
+  - unix
+  - windows
+- name: golang.org/x/text
+  version: 88f656faf3f37f690df1a32515b479415e1a6769
+- name: gonum.org/v1/gonum
+  version: 996b88e8f8941c9defdbb338bea5e239a230e742
+  repo: http://github.com/gonum/gonum
+  subpackages:
+  - graph
+  - graph/simple
+  - graph/topo
+- name: google.golang.org/grpc
+  version: 61763f5bcf26276d4c255c89e9dcf8f9838a271b
+- name: gopkg.in/yaml.v2
+  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
+testImports: []
