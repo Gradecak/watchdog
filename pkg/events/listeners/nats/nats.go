@@ -41,13 +41,19 @@ func New(cfg *Config) (*EventListener, error) {
 }
 
 func (el *EventListener) Listen(e chan events.Event) {
-	for prefix, parser := range el.matchers {
-		el.conn.Subscribe(prefix, func(m *stan.Msg) {
-			event, err := parser.Parse(m.Data)
+	//On event recieved callback
+	eventCB := func(p events.EventParser, e chan events.Event) func(*stan.Msg) {
+		return func(m *stan.Msg) {
+			event, err := p.Parse(m.Data)
 			if err != nil {
 				return
 			}
 			e <- event
-		})
+		}
+	}
+
+	// start event stream subscriptions
+	for prefix, parser := range el.matchers {
+		el.conn.Subscribe(prefix, eventCB(parser, e))
 	}
 }

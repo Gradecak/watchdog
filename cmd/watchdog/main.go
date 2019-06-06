@@ -3,10 +3,9 @@ package main
 import (
 	"github.com/gradecak/watchdog/pkg/events"
 	"github.com/gradecak/watchdog/pkg/events/listeners/nats"
-	"github.com/gradecak/watchdog/pkg/policy"
+	"github.com/gradecak/watchdog/pkg/policy/gdpr"
 	"github.com/gradecak/watchdog/pkg/provenance"
 	"github.com/gradecak/watchdog/pkg/system"
-	// "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -23,7 +22,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	dispatcher := system.NewEventDispatcher(policy.NewGDPRPolicy(memprov.NewProv()))
-	sys := system.New(dispatcher, listener)
+	policy := gdpr.NewPolicy(memprov.NewProv())
+	sys := system.New(policy, []events.Listener{listener})
 	sys.Run()
 }

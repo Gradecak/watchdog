@@ -68,6 +68,7 @@ func (e ProvEvent) Type() int {
 }
 
 func (e ProvEvent) Parse(data []byte) (Event, error) {
+	logrus.Info("PROVENANCE")
 	p := &graph.Provenance{}
 	err := proto.Unmarshal(data, p)
 	if err != nil {

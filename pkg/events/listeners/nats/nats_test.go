@@ -10,7 +10,7 @@ import (
 
 func TestConnect(t *testing.T) {
 	consentMsg := &types.ConsentMessage{
-		ID: "Gopher",
+		ID: "test",
 		Status: &types.ConsentStatus{
 			Status: types.ConsentStatus_Status(1),
 		},
@@ -25,6 +25,6 @@ func TestConnect(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 
-	conn.Publish("consent", buf)
+	conn.Publish("CONSENT", buf)
 
 }

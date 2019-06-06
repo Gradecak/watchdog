@@ -42,6 +42,10 @@ func (m *MemProv) GetWfTasks(id int64) []*graph.Node {
 	return tasks
 }
 
+func (m *MemProv) GetWfPredecessors(id int64) []int64{
+	return m.predecessors[id]
+}
+
 func (m *MemProv) Merge(g *graph.Provenance) error {
 	m.mux.Lock()
 	for entity, wfId := range g.GetExecuted() {
