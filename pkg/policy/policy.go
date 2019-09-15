@@ -5,15 +5,13 @@ import (
 	"time"
 )
 
-// type Policy map[int][]enforcer.Enforcer
-
-type Violation struct {
-	Msg string
-	Ts  time.Time
+type Result struct {
+	Payload interface{}
+	Ts      time.Time
 }
 
-type Enforcer func(events.Event) ([]*Violation, error)
+type Enforcer func(e *events.Event) ([]*Result, error)
 
 type Policy interface {
-	Actions(int) []Enforcer // event type to list of enforcers
+	Actions(string) (error, []Enforcer) // event type to list of enforcers
 }

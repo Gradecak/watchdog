@@ -2,15 +2,15 @@ package nats
 
 import (
 	// "fmt"
-	"github.com/fission/fission-workflows/pkg/types"
 	"github.com/golang/protobuf/proto"
+	"github.com/gradecak/fission-workflows/pkg/types"
 	stan "github.com/nats-io/stan.go"
 	"testing"
 )
 
 func TestConnect(t *testing.T) {
 	consentMsg := &types.ConsentMessage{
-		ID: "test",
+		ID: "poo",
 		Status: &types.ConsentStatus{
 			Status: types.ConsentStatus_Status(1),
 		},

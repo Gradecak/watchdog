@@ -19,12 +19,12 @@ type Config struct {
 	URL     string
 	// list of prefixes that we
 	// subscribe to for events
-	Matchers map[string]events.EventParser
+	Prefixes []string
 }
 
 type EventListener struct {
 	conn     stan.Conn
-	matchers map[string]events.EventParser
+	prefixes []string
 }
 
 func New(cfg *Config) (*EventListener, error) {
@@ -37,23 +37,19 @@ func New(cfg *Config) (*EventListener, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &EventListener{conn: conn, matchers: cfg.Matchers}, nil
+	return &EventListener{conn: conn, prefixes: cfg.Prefixes}, nil
 }
 
-func (el *EventListener) Listen(e chan events.Event) {
+func (el *EventListener) Listen(e chan *events.Event) {
 	//On event recieved callback
-	eventCB := func(p events.EventParser, e chan events.Event) func(*stan.Msg) {
+	eventCB := func(prefix string, e chan *events.Event) func(*stan.Msg) {
 		return func(m *stan.Msg) {
-			event, err := p.Parse(m.Data)
-			if err != nil {
-				return
-			}
-			e <- event
+			e <- &events.Event{prefix, m.Data}
 		}
 	}
 
 	// start event stream subscriptions
-	for prefix, parser := range el.matchers {
-		el.conn.Subscribe(prefix, eventCB(parser, e))
+	for _, prefix := range el.prefixes {
+		el.conn.Subscribe(prefix, eventCB(prefix, e))
 	}
 }

@@ -2,51 +2,74 @@ package gdpr
 
 import (
 	"errors"
-	"github.com/fission/fission-workflows/pkg/provenance/graph"
-	"github.com/fission/fission-workflows/pkg/types"
-	"github.com/gradecak/watchdog/pkg/api"
+	"fmt"
+	"github.com/golang/protobuf/proto"
+	"github.com/gradecak/fission-workflows/pkg/provenance/graph"
+	"github.com/gradecak/fission-workflows/pkg/types"
 	"github.com/gradecak/watchdog/pkg/events"
 	"github.com/gradecak/watchdog/pkg/policy"
+	"github.com/gradecak/watchdog/pkg/policy/gdpr/provenance"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
+	"net/http"
 )
 
 type Policy struct {
-	prov api.ProvenanceStore
+	prov *provenance.DbProv
 }
 
-func NewPolicy(provAPI api.ProvenanceStore) policy.Policy {
+func NewPolicy(provAPI *provenance.DbProv) policy.Policy {
 	return Policy{provAPI}
 }
 
-func (p Policy) Actions(e int) []policy.Enforcer {
+func (p Policy) Actions(e string) (error, []policy.Enforcer) {
 	switch e {
-	case events.Event_CONSENT:
-		return []policy.Enforcer{p.consentEnforcer()}
-	case events.Event_PROVENANCE:
-		return []policy.Enforcer{p.provenanceEnforcer()}
+	case "CONSENT":
+		return nil, []policy.Enforcer{p.consentEnforcer()}
+	case "PROVENANCE":
+		return nil, []policy.Enforcer{p.provenanceEnforcer()}
 	}
-	return nil
+	return events.ERR_UNKNOWN, nil
 }
 
 //
 //Consent Enforcer
 //
+
+type Meta struct {
+	Revoke struct {
+		Url string `yaml:"url"`
+	} `yaml:"revoke"`
+}
+
 func (p Policy) consentEnforcer() policy.Enforcer {
-	return func(e events.Event) ([]*policy.Violation, error) {
-		// ensure event recieved is correct type
-		conEvent, ok := e.(*events.ConsentEvent)
-		if !ok {
+	return func(e *events.Event) ([]*policy.Result, error) {
+		// parse event payload
+		conEvent := &types.ConsentMessage{}
+		err := proto.Unmarshal(e.Payload, conEvent)
+		if err != nil {
 			return nil, errors.New("Received event is not Consent Event")
 		}
-
 		// only take action on revoked status
-		if status := conEvent.Msg.Status.Status; status == types.ConsentStatus_REVOKED {
-
+		if status := conEvent.Status.Status; status == types.ConsentStatus_REVOKED {
+			logrus.Info("Revoked status")
 			writeTasks := []*graph.Node{}
 			// filter tasks
-			for _, tasks := range p.prov.Executed(conEvent.Msg.ID) {
+			for _, tasks := range p.prov.Executed(conEvent.ID) {
+				logrus.Info("Num tasks for ID %s -- %s", conEvent.ID, len(tasks))
 				for _, task := range tasks {
 					if task.GetOp() == graph.Node_WRITE {
+						logrus.Info("Write")
+						m := &Meta{}
+						err := yaml.Unmarshal([]byte(task.GetMeta()), m)
+						if err != nil {
+							logrus.Error(err.Error())
+						}
+						resp, err := http.Get(fmt.Sprintf("%s/%s", m.Revoke.Url, conEvent.ID))
+						if err != nil {
+							logrus.Error(err.Error())
+						}
+						resp.Body.Close()
 						writeTasks = append(writeTasks, task)
 					}
 				}
@@ -60,13 +83,19 @@ func (p Policy) consentEnforcer() policy.Enforcer {
 // Provenance Consistency Enforcer
 //
 func (p Policy) provenanceEnforcer() policy.Enforcer {
-	return func(e events.Event) ([]*policy.Violation, error) {
-		logrus.Info("Processing provenance update event\n")
-		if pg, ok := e.(*events.ProvEvent); ok {
-			return []*policy.Violation{}, p.prov.Merge(pg.Msg)
+	return func(e *events.Event) ([]*policy.Result, error) {
+		pg := &graph.Provenance{}
+		err := proto.Unmarshal(e.Payload, pg)
+		if err != nil {
+			return nil, errors.New("Received event could not be cast to ProvEvent")
 		}
-		err := errors.New("Received event could not be cast to ProvEvent")
-		logrus.Warn(err.Error())
-		return nil, err
+		logrus.Info("New Prov Event")
+		err = p.prov.Merge(pg)
+		if err != nil {
+			logrus.Errorf("FUCK ME IN THE ASS %v", err.Error())
+		}
+		logrus.Info("IM FUCKING DONE")
+		return []*policy.Result{}, err
+
 	}
 }

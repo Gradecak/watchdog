@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345
+  nats:
+    image: nats-streaming
+    ports:
+      - 4222:4222
+      - 8222:8222
+
+  watchdog:
+    image: watchdog:latest
+    ports:
+      - 5352:5352
+    depends_on:
+      - db
+      - nats
+    command: --init-db --nats-url nats --db-url db --metrics
+    volumes:
+      - ./configs/my.cnf:/etc/mysql/conf.d/
+
+  # php my admin image for easy database verification
+  db-admin:
+    image: phpmyadmin/phpmyadmin
+    container_name: php-myadmin
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345
+    ports:
+      - 9898:80
+    depends_on:
+      - db
