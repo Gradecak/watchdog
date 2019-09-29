@@ -2,7 +2,7 @@ package gdpr
 
 import (
 	"errors"
-	"fmt"
+	// "fmt"
 	"github.com/golang/protobuf/proto"
 	"github.com/gradecak/fission-workflows/pkg/provenance/graph"
 	"github.com/gradecak/fission-workflows/pkg/types"
@@ -10,8 +10,9 @@ import (
 	"github.com/gradecak/watchdog/pkg/policy"
 	"github.com/gradecak/watchdog/pkg/policy/gdpr/provenance"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
-	"net/http"
+	// "gopkg.in/yaml.v2"
+	// "net/http"
+	// "strings"
 )
 
 type Policy struct {
@@ -37,9 +38,7 @@ func (p Policy) Actions(e string) (error, []policy.Enforcer) {
 //
 
 type Meta struct {
-	Revoke struct {
-		Url string `yaml:"url"`
-	} `yaml:"revoke"`
+	Revoke string `yaml:"revoke"`
 }
 
 func (p Policy) consentEnforcer() policy.Enforcer {
@@ -54,22 +53,27 @@ func (p Policy) consentEnforcer() policy.Enforcer {
 		if status := conEvent.Status.Status; status == types.ConsentStatus_REVOKED {
 			logrus.Info("Revoked status")
 			writeTasks := []*graph.Node{}
+
+			// b := strings.Split(conEvent.ID, "/$/")
+			// id, startTime := b[0], b[1]
 			// filter tasks
 			for _, tasks := range p.prov.Executed(conEvent.ID) {
+				// for _, tasks := range p.prov.Executed(id) {
 				logrus.Info("Num tasks for ID %s -- %s", conEvent.ID, len(tasks))
 				for _, task := range tasks {
 					if task.GetOp() == graph.Node_WRITE {
-						logrus.Info("Write")
-						m := &Meta{}
-						err := yaml.Unmarshal([]byte(task.GetMeta()), m)
+						// m := &Meta{}
+						logrus.Infof("Task Meta %v", task.GetMeta())
+						// err := yaml.Unmarshal([]byte(task.GetMeta()), m)
+						// if err != nil {
+						// 	logrus.Error(err.Error())
+						// 	return nil, err
+						// }
+						// resp, err := http.Get(fmt.Sprintf("%s/%s", task.GetMeta(), startTime))
 						if err != nil {
 							logrus.Error(err.Error())
 						}
-						resp, err := http.Get(fmt.Sprintf("%s/%s", m.Revoke.Url, conEvent.ID))
-						if err != nil {
-							logrus.Error(err.Error())
-						}
-						resp.Body.Close()
+						// resp.Body.Close()
 						writeTasks = append(writeTasks, task)
 					}
 				}
@@ -89,12 +93,10 @@ func (p Policy) provenanceEnforcer() policy.Enforcer {
 		if err != nil {
 			return nil, errors.New("Received event could not be cast to ProvEvent")
 		}
-		logrus.Info("New Prov Event")
 		err = p.prov.Merge(pg)
 		if err != nil {
-			logrus.Errorf("FUCK ME IN THE ASS %v", err.Error())
+			logrus.Errorf("Merge Error; reason: %v", err.Error())
 		}
-		logrus.Info("IM FUCKING DONE")
 		return []*policy.Result{}, err
 
 	}

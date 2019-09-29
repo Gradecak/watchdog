@@ -6,8 +6,20 @@ import (
 	"testing"
 )
 
+var (
+	conn = &DbConf{
+		Init: true,
+		User: "root",
+		Pass: "12345",
+		Db:   "watchdog",
+		URL:  "127.0.0.1:3306",
+	}
+	db = &DbProv{}
+)
+
 func TestConnect(t *testing.T) {
-	db, err := NewDBProv()
+	var err error
+	db, err = NewDBProv(conn)
 	if err != nil {
 		t.Error(err)
 	}
@@ -16,11 +28,6 @@ func TestConnect(t *testing.T) {
 }
 
 func TestWrite(t *testing.T) {
-	db, err := NewDBProv()
-	if err != nil {
-		t.Error(err)
-	}
-
 	task := &graph.Node{
 		Type:   3,
 		Meta:   "poo",
@@ -32,6 +39,25 @@ func TestWrite(t *testing.T) {
 		Nodes:    map[int64]*graph.Node{12: task},
 		WfTasks:  map[int64]*graph.IDs{13: &graph.IDs{[]int64{12}}},
 		Executed: map[string]int64{"radical": 13},
+	}
+
+	if err := db.Merge(graph); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	task := &graph.Node{
+		Type:   3,
+		Meta:   "shit",
+		FnName: "shit",
+		Task:   "shit",
+	}
+
+	graph := &graph.Provenance{
+		Nodes:    map[int64]*graph.Node{14: task},
+		WfTasks:  map[int64]*graph.IDs{15: &graph.IDs{[]int64{14}}},
+		Executed: map[string]int64{"radical": 15},
 	}
 
 	if err := db.Merge(graph); err != nil {

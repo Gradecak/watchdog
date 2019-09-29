@@ -3,7 +3,7 @@ package aggregator
 import (
 	"github.com/gradecak/watchdog/pkg/api"
 	"github.com/gradecak/watchdog/pkg/events"
-	"github.com/sirupsen/logrus"
+	// "github.com/sirupsen/logrus"
 )
 
 type EventAggregator struct {
@@ -26,7 +26,7 @@ func (s EventAggregator) Run() error {
 	for {
 		select {
 		case event := <-events:
-			logrus.Info("New Event. Queueing")
+			// logrus.Info("New Event. Queueing")
 			s.dispatchAPI.Queue(event)
 		}
 	}

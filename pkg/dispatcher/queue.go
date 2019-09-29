@@ -1,8 +1,10 @@
 package dispatcher
 
 import (
+	"github.com/gradecak/watchdog/pkg/dispatcher/queue"
 	"github.com/gradecak/watchdog/pkg/events"
 	"github.com/prometheus/client_golang/prometheus"
+	"time"
 )
 
 var (
@@ -20,19 +22,19 @@ func init() {
 
 //TODO add persistant storage for queue items
 
-type DispatchQueue chan *events.Event
+type DispatchQueue chan *queue.QueueEvent
 
 func NewDispatchQueue(size int) DispatchQueue {
-	q := make(chan *events.Event, size)
+	q := make(chan *queue.QueueEvent, size)
 	return q
 }
 
 func (d DispatchQueue) Add(e *events.Event) {
 	defer NumQueued.Inc()
-	d <- e
+	d <- &queue.QueueEvent{e, time.Now()}
 }
 
-func (d DispatchQueue) Get() *events.Event {
+func (d DispatchQueue) Get() *queue.QueueEvent {
 	defer NumQueued.Dec()
 	return <-d
 }

@@ -26,7 +26,7 @@ const (
 	DISPATCH_QUEUE_SIZE  = 100000
 	DEFAULT_NATS_URL     = "127.0.0.1"
 	DEFAULT_NATS_CLUSTER = "test-cluster"
-	DEFAULT_DB_URL       = "127.0.0.1"
+	DEFAULT_DB_URL       = "127.0.0.1:3306"
 	DEFAULT_DB_USER      = "root"
 	DEFAULT_DB_PASS      = "12345"
 )

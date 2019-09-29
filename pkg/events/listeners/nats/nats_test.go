@@ -8,9 +8,30 @@ import (
 	"testing"
 )
 
+// func TestConnect(t *testing.T) {
+// 	consentMsg := &types.ConsentMessage{
+// 		ID: "NOQuFkROSD",
+// 		Status: &types.ConsentStatus{
+// 			Status: types.ConsentStatus_Status(1),
+// 		},
+// 	}
+
+// 	buf, err := proto.Marshal(consentMsg)
+// 	if err != nil {
+// 		t.Errorf("%v", err)
+// 	}
+// 	conn, err := stan.Connect("test-cluster", "tester", stan.NatsURL("127.0.0.1"))
+// 	if err != nil {
+// 		t.Errorf("%v", err)
+// 	}
+
+// 	conn.Publish("CONSENT", buf)
+
+// }
+
 func TestConnect(t *testing.T) {
 	consentMsg := &types.ConsentMessage{
-		ID: "poo",
+		ID: "NOQuFkROSD",
 		Status: &types.ConsentStatus{
 			Status: types.ConsentStatus_Status(1),
 		},
