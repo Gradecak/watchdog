@@ -47,7 +47,7 @@ func (m *Monitor) Run() {
 			// block until an enforcer calls done
 			m.activeMu.RLock()
 			m.waitingMu.Lock()
-			if m.active < m.maxActive-400 {
+			if m.active < m.maxActive-500 {
 				for _, waiting := range m.waiting {
 					logrus.Info("NOTIFYING SLEEPERS")
 					waiting <- true

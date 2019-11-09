@@ -53,7 +53,7 @@ type Dispatcher struct {
 }
 
 func NewDispatcher(d queue.DispatchQueue, p *api.Policy) *Dispatcher {
-	monitor := NewMonitor(1000)
+	monitor := NewMonitor(4000)
 	return &Dispatcher{
 		q:       d,
 		pAPI:    p,

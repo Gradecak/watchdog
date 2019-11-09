@@ -1,5 +1,5 @@
-hash: 641a264b407294f46d29fc7b9650144f295e494bebc5ba4921e3d792f093b702
-updated: 2019-08-09T12:36:40.618941257+02:00
+hash: 0848de52677396edb5db4607c603d559d959eb6c0b6e4f2b731263054b337c06
+updated: 2019-09-29T20:13:42.022863634+02:00
 imports:
 - name: github.com/beorn7/perks
   version: 4b2b341e8d7715fae06375aa633dbb6e91b3fb46
@@ -54,7 +54,11 @@ imports:
 - name: github.com/hashicorp/golang-lru
   version: 20f1fb78b0740ba8c3cb143a61e86ba5c8669768
 - name: github.com/huandu/go-sqlbuilder
-  version: 47ad0c5de1051bb36403e717180bea3699247814
+  version: 604a8e6ce8d5c20a200152f1cef2f872a263714f
+- name: github.com/jinzhu/gorm
+  version: 81c17a7e2529c59efc4e74c5b32c1fb71fb12fa2
+- name: github.com/jinzhu/inflection
+  version: f5c5f50e6090ae76a29240b61ae2a90dd810112e
 - name: github.com/konsorten/go-windows-terminal-sequences
   version: f55edac94c9bbba5d6182a4be46d86a2c9b5b50e
 - name: github.com/matttproud/golang_protobuf_extensions

@@ -71,3 +71,7 @@ import:
   version: ~1.1.0
   subpackages:
   - prometheus
+- package: github.com/jinzhu/gorm
+  version: ~1.9.10
+- package: github.com/jinzhu/inflection
+  version: ~1.0.0

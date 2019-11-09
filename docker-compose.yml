@@ -5,22 +5,29 @@ services:
     image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=12345
+      - MYSQL_DATABASE=watchdog
+    ports:
+      - 3306:3306
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
   nats:
     image: nats-streaming
     ports:
       - 4222:4222
       - 8222:8222
 
-  watchdog:
-    image: watchdog:latest
-    ports:
-      - 5352:5352
-    depends_on:
-      - db
-      - nats
-    command: --init-db --nats-url nats --db-url db --metrics
-    volumes:
-      - ./configs/my.cnf:/etc/mysql/conf.d/
+  # watchdog:
+  #   image: mgradecak/watchdog:latest
+  #   ports:
+  #     - 5352:5352
+  #   depends_on:
+  #     - db
+  #     - nats
+  #   command: --init-db --nats-url nats --db-url db --metrics
+  #   volumes:
+  #     - ./configs/my.cnf:/etc/mysql/conf.d/
 
   # php my admin image for easy database verification
   db-admin:
