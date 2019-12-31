@@ -1,9 +1,9 @@
 package provenance
 
 import (
-	"github.com/gradecak/fission-workflows/pkg/provenance/graph"
-	"github.com/sirupsen/logrus"
 	"sync"
+
+	"github.com/gradecak/fission-workflows/pkg/provenance/graph"
 )
 
 type MemProv struct {
@@ -65,7 +65,6 @@ func (m *MemProv) Merge(g *graph.Provenance) error {
 		}
 	}
 	m.mux.Unlock()
-	logrus.Infof("%+v\n", m)
 	return nil
 }
 

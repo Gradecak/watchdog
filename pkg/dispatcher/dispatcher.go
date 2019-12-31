@@ -1,11 +1,12 @@
 package dispatcher
 
 import (
+	"time"
+
 	"github.com/gradecak/watchdog/pkg/api"
 	"github.com/gradecak/watchdog/pkg/dispatcher/queue"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 var (

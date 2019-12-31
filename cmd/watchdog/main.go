@@ -18,8 +18,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -33,16 +34,18 @@ const (
 
 func runApp(ctx context.Context, c *cli.Context) error {
 	logrus.Info("Setting up app...")
-	prov, err := provenance.NewDBProv(&provenance.DbConf{
-		Init: c.Bool("init-db"),
-		User: c.String("db-user"),
-		Pass: c.String("db-pass"),
-		Db:   "watchdog",
-		URL:  c.String("db-url"),
-	})
-	if err != nil {
-		panic(err)
-	}
+	// prov, err := provenance.NewDBProv(&provenance.DbConf{
+	// 	Init: c.Bool("init-db"),
+	// 	User: c.String("db-user"),
+	// 	Pass: c.String("db-pass"),
+	// 	Db:   "watchdog",
+	// 	URL:  c.String("db-url"),
+	// })
+	// if err != nil {
+	// 	panic(err)
+	// }
+	prov := provenance.NewMemProv()
+
 	policy := gdpr.NewPolicy(prov)
 	policyAPI := api.NewPolicyAPI(policy)
 	dispatchAPI := setupDispatcher(dispatcher.NewDispatchQueue(DISPATCH_QUEUE_SIZE), policyAPI)

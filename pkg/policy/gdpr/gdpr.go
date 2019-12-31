@@ -16,10 +16,10 @@ import (
 )
 
 type Policy struct {
-	prov *provenance.DbProv
+	prov *provenance.MemProv
 }
 
-func NewPolicy(provAPI *provenance.DbProv) policy.Policy {
+func NewPolicy(provAPI *provenance.MemProv) policy.Policy {
 	return Policy{provAPI}
 }
 
